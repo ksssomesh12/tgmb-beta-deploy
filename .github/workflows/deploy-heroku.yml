@@ -13,7 +13,15 @@ jobs:
           driver: docker
           install: true
 
+      - name: Checkout Repo
+        id: checkout_repo
+        uses: actions/checkout@v2
+        with:
+          path: .
+          ref: master
+
       - name: Build-Push-Release App to Heroku
+        id: build_push_release
         env:
           DYNAMIC_JSON_FILEID: ${{ secrets.DYNAMIC_JSON_FILEID }}
           GIT_REF: ${{ secrets.GIT_REF }}
