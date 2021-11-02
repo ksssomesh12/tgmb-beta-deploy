@@ -1,0 +1,27 @@
+name: deploy-heroku
+
+on: workflow_dispatch
+
+jobs:
+  deploy-heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Docker Buildx
+        id: setup_buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver: docker
+          install: true
+
+      - name: Build-Push-Release App to Heroku
+        env:
+          DYNAMIC_JSON_FILEID: ${{ secrets.DYNAMIC_JSON_FILEID }}
+          GIT_REF: ${{ secrets.GIT_REF }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          heroku container:login
+          echo "https://docs.google.com/uc?export=download&id=$DYNAMIC_JSON_FILEID" | aria2c --input-file=-
+          docker build . -t registry.heroku.com/$HEROKU_APP_NAME/worker --progress=plain --build-arg GIT_REF=$GIT_REF
+          docker push registry.heroku.com/$HEROKU_APP_NAME/worker
+          heroku container:release worker -a $HEROKU_APP_NAME
