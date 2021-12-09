@@ -115,32 +115,136 @@ fileidJsonFile = 'fileid.json'
 credsJsonFile = 'creds.json'
 saJsonFile = 'sa.json'
 tokenJsonFile = 'token.json'
-configFiles: typing.List[str] = [configJsonFile, configJsonBakFile]
+configFiles: typing.List[str] = \
+    [
+        configJsonFile,
+        configJsonBakFile
+    ]
 oauthCreds = None
-oauthScopes: typing.List[str] = ['https://www.googleapis.com/auth/drive']
+oauthScopes: typing.List[str] = \
+    [
+        'https://www.googleapis.com/auth/drive'
+    ]
 driveService: typing.Any
 chunkSize: int = 32 * 1024 * 1024
 keySuffixId = 'Id'
 keySuffixHash = 'Hash'
 inputQueries: typing.List[str] = \
-    ['Do You Want to Use Dynamic Config? ', 'Do You Want to Update Config? ', 'Do You Want to Use User Account Auth? ']
-inputsFalsy: typing.List[str] = ['N', 'n']
-inputsTruthy: typing.List[str] = ['Y', 'y', '']
+    [
+        'Do You Want to Use Dynamic Config? ',
+        'Do You Want to Update Config? ',
+        'Do You Want to Use User Account Auth? '
+    ]
+inputsFalsy: typing.List[str] = \
+    [
+        'N',
+        'n'
+    ]
+inputsTruthy: typing.List[str] = \
+    [
+        'Y',
+        'y',
+        ''
+    ]
 isDynamicConfig: bool
 isUpdateConfig: bool
 isUserAuth: bool
 configVars: typing.Dict
 configTemplateJsonFile = 'config.template.json'
 configTemplateVars: typing.Dict = \
-    {'botToken': '', 'botOwnerId': '', 'telegramApiId': '', 'telegramApiHash': '',
-     'googleDriveAuth': {'authType': '', 'authInfos': {'credsJson': {}, 'saJson': {}, 'tokenJson': {}}},
-     'googleDriveUploadFolderIds': {}, 'ariaGlobalOpts': {'allow-overwrite': 'true', 'bt-max-peers': '0', 'follow-torrent': 'mem',
-                                                          'max-connection-per-server': '8', 'max-overall-upload-limit': '1K',
-                                                          'min-split-size': '10M', 'seed-time': '0.01', 'split': '10'},
-     'authorizedChats': {}, 'dlRootDir': 'dl', 'logLevel': 'INFO', 'megaAuth': {'apiKey': '', 'emailId': '', 'passPhrase': ''},
-     'statusUpdateInterval': '5', 'trackersListUrl': 'https://trackerslist.com/all_aria2.txt',
-     'ytdlFormat': 'best/bestvideo+bestaudio'}
-envVars: typing.Dict = {'dlWaitTime': '5'}
+    {
+        'botToken': '',
+        'botOwnerId': '',
+        'telegramApiId': '',
+        'telegramApiHash': '',
+        'googleDriveAuth': {
+            'authType': '',
+            'authInfos': {
+                'credsJson': {},
+                'saJson': {},
+                'tokenJson': {}
+            }
+        },
+        'googleDriveUploadFolderIds': {},
+        'ariaConf': {
+            'allow-overwrite': 'true',
+            'follow-torrent': 'false',
+            'max-connection-per-server': '8',
+            'min-split-size': '8M',
+            'split': '8'
+        },
+        'authorizedChats': {},
+        'dlRootDir': 'dl',
+        'logLevel': 'INFO',
+        'megaAuth': {
+            'apiKey': '',
+            'emailId': '',
+            'passPhrase': ''
+        },
+        'qbitTorrentConf': {
+            'BitTorrent': {
+                'Session': {
+                    'AsyncIOThreadsCount': '8',
+                    'MultiConnectionsPerIp': 'true',
+                    'SlowTorrentsDownloadRate': '100',
+                    'SlowTorrentsInactivityTimer': '600'
+                }
+            },
+            'LegalNotice': {
+                '': {
+                    'Accepted': 'true'
+                }
+            },
+            'Preferences': {
+                'Advanced': {
+                    'AnnounceToAllTrackers': 'true',
+                    'AnonymousMode': 'false',
+                    'IgnoreLimitsLAN': 'true',
+                    'RecheckOnCompletion': 'true',
+                    'LtTrackerExchange': 'true'
+                },
+                'Bittorrent': {
+                    'AddTrackers': 'false',
+                    'MaxConnecs': '-1',
+                    'MaxConnecsPerTorrent': '-1',
+                    'MaxUploads': '-1',
+                    'MaxUploadsPerTorrent': '-1',
+                    'DHT': 'true',
+                    'DHTPort': '6881',
+                    'PeX': 'true',
+                    'LSD': 'true',
+                    'sameDHTPortAsBT': 'true'
+                },
+                'Downloads': {
+                    'DiskWriteCacheSize': '32',
+                    'PreAllocation': 'true',
+                    'UseIncompleteExtension': 'true'
+                },
+                'General': {
+                    'PreventFromSuspendWhenDownloading': 'true'
+                },
+                'Queueing': {
+                    'IgnoreSlowTorrents': 'true',
+                    'MaxActiveDownloads': '100',
+                    'MaxActiveTorrents': '50',
+                    'MaxActiveUploads': '50',
+                    'QueueingEnabled': 'false'
+                },
+                'WebUI': {
+                    'Enabled': 'true',
+                    'Port': '8400',
+                    'LocalHostAuth': 'false'
+                }
+            }
+        },
+        'statusUpdateInterval': '5',
+        'trackersListUrl': 'https://trackerslist.com/all.txt',
+        'ytdlFormat': 'best/bestvideo+bestaudio'
+    }
+envVars: typing.Dict = \
+    {
+        'dlWaitTime': '5'
+    }
 
 if __name__ == '__main__':
     jsonFileWrite(configTemplateJsonFile, configTemplateVars)
@@ -202,8 +306,11 @@ if __name__ == '__main__':
             fileidJsonDict[getFileHashKey(configFile)] = getFileHash(configFile)
         jsonFileWrite(fileidJsonFile, fileidJsonDict)
         dynamicJsonDict: typing.Dict[str, str] = \
-            {'configFolderId': envVars['configFolderId'], 'dlWaitTime': envVars['dlWaitTime'],
-             getFileIdKey(fileidJsonFile): (filePatch(fileidJsonFile) if isUpdateConfig else fileUpload(fileidJsonFile))}
+            {
+                'configFolderId': envVars['configFolderId'],
+                'dlWaitTime': envVars['dlWaitTime'],
+                getFileIdKey(fileidJsonFile): (filePatch(fileidJsonFile) if isUpdateConfig else fileUpload(fileidJsonFile))
+            }
         jsonFileWrite(dynamicJsonFile, dynamicJsonDict)
         (filePatch(dynamicJsonFile) if isUpdateConfig else fileUpload(dynamicJsonFile))
         if input('Do You Want to Delete the Local Config Files? ') in inputsTruthy:
@@ -269,6 +376,13 @@ if __name__ == '__main__':
 #     "#folderId-04": "#folderDescription-04",
 #     "#folderId-05": "#folderDescription-05"
 #   },
+#   "ariaConf": {
+#     "allow-overwrite": "true",
+#     "follow-torrent": "false",
+#     "max-connection-per-server": "8",
+#     "min-split-size": "8M",
+#     "split": "8"
+#   },
 #   "authorizedChats": {
 #     "#chatId-01": {
 #       "chatType": "#chatType-01",
@@ -286,20 +400,72 @@ if __name__ == '__main__':
 #       "chatType": "#chatType-05",
 #       "chatName": "#chatName-05"}
 #   },
-#   "ariaGlobalOpts": {
-#     "allow-overwrite": "true",
-#     "bt-max-peers": "0",
-#     "follow-torrent": "mem",
-#     "max-connection-per-server": "8",
-#     "max-overall-upload-limit": "1K",
-#     "min-split-size": "10M",
-#     "seed-time": "0.01",
-#     "split": "10"
-#   },
 #   "dlRootDir": "dl",
 #   "logLevel": "INFO",
+#   "megaAuth": {
+#     "apiKey": "",
+#     "emailId": "",
+#     "passPhrase": ""
+#   },
+#   "qbitTorrentConf": {
+#     "BitTorrent": {
+#       "Session": {
+#         "AsyncIOThreadsCount": "8",
+#         "MultiConnectionsPerIp": "true",
+#         "SlowTorrentsDownloadRate": "100",
+#         "SlowTorrentsInactivityTimer": "600"
+#       }
+#     },
+#     "LegalNotice": {
+#       "": {
+#         "Accepted": "true"
+#       }
+#     },
+#     "Preferences": {
+#       "Advanced": {
+#         "AnnounceToAllTrackers": "true",
+#         "AnonymousMode": "false",
+#         "IgnoreLimitsLAN": "true",
+#         "RecheckOnCompletion": "true",
+#         "LtTrackerExchange": "true"
+#       },
+#       "Bittorrent": {
+#         "AddTrackers": "false",
+#         "MaxConnecs": "-1",
+#         "MaxConnecsPerTorrent": "-1",
+#         "MaxUploads": "-1",
+#         "MaxUploadsPerTorrent": "-1",
+#         "DHT": "true",
+#         "DHTPort": "6881",
+#         "PeX": "true",
+#         "LSD": "true",
+#         "sameDHTPortAsBT": "true"
+#       },
+#       "Downloads": {
+#         "DiskWriteCacheSize": "32",
+#         "PreAllocation": "true",
+#         "UseIncompleteExtension": "true"
+#       },
+#       "General": {
+#         "PreventFromSuspendWhenDownloading": "true"
+#       },
+#       "Queueing": {
+#         "IgnoreSlowTorrents": "true",
+#         "MaxActiveDownloads": "100",
+#         "MaxActiveTorrents": "50",
+#         "MaxActiveUploads": "50",
+#         "QueueingEnabled": "false"
+#       },
+#       "WebUI": {
+#         "Enabled": "true",
+#         "Port": "8400",
+#         "LocalHostAuth": "false"
+#       }
+#     }
+#   },
 #   "statusUpdateInterval": "5",
-#   "trackersListUrl": "https://trackerslist.com/all_aria2.txt"
+#   "trackersListUrl": "https://trackerslist.com/all.txt",
+#   "ytdlFormat": "best/bestvideo+bestaudio"
 # }
 # ------ ENDS ------ #
 
